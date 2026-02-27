@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鲤鱼交通集团客运线路图</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>鲤鱼交通集团客运线路图</h1>
+
+    <div class="controls">
+        <button class="zoom-btn" onclick="zoomIn()">+</button>
+        <button class="zoom-btn" onclick="zoomOut()">-</button>
+        <button class="zoom-btn" onclick="resetView()">重置</button>
+    </div>
+
+    <div class="map-container" id="map-container">
+        <img id="subway-map" src="地铁图.png" alt="地铁线路图">
+    </div>
+
+    <!-- 维护者输入的文字内容区域 -->
+    <div class="text-display" id="text-display">
+        <!-- 这里将显示维护者输入的文字 -->
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
