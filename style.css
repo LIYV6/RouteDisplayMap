@@ -16,6 +16,31 @@ h1 {
     max-width: 1200px;
 }
 
+/*自己新增的*/
+/* 下拉框样式 */
+.city-selector {
+  margin: 30px auto;
+  width: 300px;
+}
+
+#city-select {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 1.1rem;
+  border: 2px solid #0069c0;
+  border-radius: 8px;
+  background-color: #e0f7fa;
+  color: #0069c0;
+  outline: none;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#city-select:hover {
+  background-color: #b3e5fc;
+}
+/*自己新增的*/
+
 .controls {
     margin: 15px 0;
 }

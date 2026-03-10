@@ -14,17 +14,45 @@ const mapContainer = document.getElementById('map-container');
 const subwayMap = document.getElementById('subway-map');
 const textDisplay = document.getElementById('text-display');
 
+// 新增：切换城市线路图
+function changeCity(cityName) {
+    // 修改图片路径为线路图汇总/[城市名].png
+    subwayMap.src = `线路图汇总/${cityName}.png`;
+    // 图片加载完成后重新初始化视图（保持和初次加载一致的缩放和居中）
+    subwayMap.onload = function() {
+        const rect = mapContainer.getBoundingClientRect();
+        const imgW = subwayMap.naturalWidth;
+        const imgH = subwayMap.naturalHeight;
+
+        if (!imgW || !imgH) {
+            scale = 1;
+            offsetX = 0;
+            offsetY = 0;
+        } else {
+            const fitScale = Math.min(rect.width / imgW, rect.height / imgH);
+            scale = Math.max(0.1, Math.min(fitScale, 5));
+            offsetX = (rect.width - imgW * scale) / 2;
+            offsetY = (rect.height - imgH * scale) / 2;
+        }
+
+        subwayMap.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+        // 更新初始视图状态（重置按钮会用新的初始状态）
+        initialScale = scale;
+        initialOffsetX = offsetX;
+        initialOffsetY = offsetY;
+    };
+}
 
 // 初始化显示内容（维护者输入的文字内容）
 function initializeTextContent() {
     textDisplay.innerHTML = `
-        <h3>鲤鱼交通集团简介：</h3>
-        <p>鲤鱼交通集团成立于2025年5月20日，是服务器内的第三家有独立运营能力的公司。</p>
-        <p>运营线路有α、β、A、B、C、D线，服务于鲤城和鲤湖湾州，以及一条带有市域性质的γ线，该线路联通都会地区、第一城、第二城、铜钿城和梅友机场。</p>
-        <p>另有一条借道鲤城南铁路的中心线，是连接鲤城和鲤湖湾州的重要铁路线路。</p>
+        <h3>重要提醒：</h3>
+        <p>本网站建设目的是为了大家更方便快速的了解服务器内线路和走向。
+        由于我们精力有限，目前仅提供鲤城、鲤湖湾州这两个区域以及全服汇总的线路信息。
+        其他地区信息尚未在计划之内，敬请期待。如果您在线路图上发现有错误，请与我们联系，我们向您表示感谢。</p>
+
     `;
 }
-
 
 // 鼠标按下事件（开始拖拽）
 mapContainer.addEventListener('mousedown', function(e) {
@@ -140,41 +168,38 @@ function zoomOut() {
     subwayMap.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
 }
 
+// 修改：重置视图函数（恢复初次加载状态）
 function resetView() {
-    // 重新居中并重置缩放
-    scale = 1;
-    // 计算居中时的 offset，使图片在容器中居中
-    const rect = mapContainer.getBoundingClientRect();
-    const imgW = subwayMap.naturalWidth;
-    const imgH = subwayMap.naturalHeight;
-
-    // 如果图片尚未加载，直接置为0
-    if (!imgW || !imgH) {
-        offsetX = 0;
-        offsetY = 0;
+    // 重置为初次加载的视图状态
+    if (initialScale !== null && initialOffsetX !== null && initialOffsetY !== null) {
+        scale = initialScale;
+        offsetX = initialOffsetX;
+        offsetY = initialOffsetY;
     } else {
-        offsetX = (rect.width - imgW) / 2;
-        offsetY = (rect.height - imgH) / 2;
+        // 回退逻辑，兼容未初始化的情况
+        const rect = mapContainer.getBoundingClientRect();
+        const imgW = subwayMap.naturalWidth;
+        const imgH = subwayMap.naturalHeight;
+        scale = 1;
+        offsetX = imgW && imgH ? (rect.width - imgW) / 2 : 0;
+        offsetY = imgW && imgH ? (rect.height - imgH) / 2 : 0;
     }
-
     subwayMap.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
 }
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
     initializeTextContent();
-    // 当图片加载后，初始化其位置以居中显示
-    if (subwayMap.complete) {
-        // 图片已经加载 — 计算初始 scale 使整张图片完整可见并居中
+    // 重构：抽离初始化视图逻辑，便于复用
+    const initMapView = () => {
         const rect = mapContainer.getBoundingClientRect();
         const imgW = subwayMap.naturalWidth;
         const imgH = subwayMap.naturalHeight;
 
         if (!imgW || !imgH) {
-            // 如果无法获取尺寸，回退到原有居中逻辑
             scale = 1;
-            offsetX = (rect.width - imgW) / 2;
-            offsetY = (rect.height - imgH) / 2;
+            offsetX = 0;
+            offsetY = 0;
         } else {
             // 计算能完整显示图片的 scale（不强制不放大），并限制到允许范围
             const fitScale = Math.min(rect.width / imgW, rect.height / imgH);
@@ -184,26 +209,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         subwayMap.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+        // 初始化时保存初始视图状态（关键：重置按钮需要用到）
+        initialScale = scale;
+        initialOffsetX = offsetX;
+        initialOffsetY = offsetY;
+    };
+
+    if (subwayMap.complete) {
+        initMapView();
     } else {
-        subwayMap.addEventListener('load', function() {
-            const rect = mapContainer.getBoundingClientRect();
-            const imgW = subwayMap.naturalWidth;
-            const imgH = subwayMap.naturalHeight;
-
-            if (!imgW || !imgH) {
-                scale = 1;
-                offsetX = (rect.width - imgW) / 2;
-                offsetY = (rect.height - imgH) / 2;
-            } else {
-                const fitScale = Math.min(rect.width / imgW, rect.height / imgH);
-                scale = Math.max(0.1, Math.min(fitScale, 5));
-                offsetX = (rect.width - imgW * scale) / 2;
-                offsetY = (rect.height - imgH * scale) / 2;
-            }
-
-            subwayMap.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
-        });
+        subwayMap.addEventListener('load', initMapView);
     }
 });
-
-

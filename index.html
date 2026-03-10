@@ -3,11 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鲤鱼交通集团客运线路图</title>
+    <title>城市轨道交通一览</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>鲤鱼交通集团客运线路图</h1>
+    <h1>城市轨道交通一览</h1>
+    <!-- 下拉选择框 -->
+    <div class="city-selector" style="margin: 10px 0;">
+        <select id="city-select" onchange="changeCity(this.value)" style="padding: 8px; font-size: 16px; border-radius: 5px; border: 2px solid #333;">
+         <!-- 这里用来添加城区 -->
+           <option value="" disabled selected>请选择城市</option>
+            <option value="鲤湖湾州及鲤城">鲤湖湾州及鲤城</option>
+            <option value="全图">全图</option>
+            <option value="城湾铁路">城湾铁路</option>
+            <!-- 这里用来添加城区 -->
+        </select>
+    </div>
 
     <div class="controls">
         <button class="zoom-btn" onclick="zoomIn()">+</button>
@@ -16,7 +27,7 @@
     </div>
 
     <div class="map-container" id="map-container">
-        <img id="subway-map" src="地铁图.png" alt="地铁线路图">
+        <img id="subway-map" src="线路图汇总/鲤城.png" alt="地铁线路图"> <!-- 初始路径改为汇总文件夹 -->
     </div>
 
     <!-- 维护者输入的文字内容区域 -->
