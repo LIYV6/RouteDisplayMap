@@ -51,9 +51,9 @@ function initializeTextContent() {
         由于我们精力有限，所展示的线路可能存在更新不及时，不准确等问题。
         如果您在线路图上发现有错误，请与我们联系，我们向您表示感谢。</p>
         <p>维护者联系方式：<br>
-        邮箱：liyv999@163.com</p>
-        <p>本页面由LiYv维护，版权所有<br>
-        This page is maintained by LiYv, all rights reserved</p>
+        邮箱：xxxxxxxx.com</p>
+        <p>本页面由xxxx维护。<br>
+        This page is maintained by xxxx.</p>
     `;
 }
 
